@@ -7,13 +7,15 @@ import numpy as np
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--resize_ratio', dest='resize_ratio', type=float, default=2., help='resize ratio to easy check')
-parser.add_argument('--is_train_data', dest='is_train_data', type=bool, default=True, help='show traind or test data')
-parser.add_argument('--interval', dest='interval', type=int, default=0, help='interval between two frames')
+parser.add_argument('--is_train', dest='is_train', action='store_true', default=False,
+                    help='show traind or test data')
+parser.add_argument('--is_print', dest='is_print', action='store_true', default=False,
+                    help='show minutiae data or not')
 args = parser.parse_args()
 
 
 class FPGT(object):
-    def __init__(self, file_name, is_print=True):
+    def __init__(self, file_name, is_print=False):
         self.base_path = '../../Data/BMP_320x280'
 
         self.minuThreshold = 20.
@@ -89,6 +91,22 @@ def fancyShow(img, fpgt, resize_ratio):
 
     return showImg
 
+def key_control(idx, is_view):
+    asc_code = cv2.waitKey(0) & 0xFF
+    if asc_code == 27:
+        sys.exit('Esc clicked!')
+    elif asc_code == ord('v'):
+        is_view = not is_view
+    elif asc_code == ord('p'):
+        idx -= 1
+        if idx < 0:
+            idx = 0
+    else:
+        idx += 1
+
+    return idx, is_view
+
+
 IS_VIEW = True
 def main(basePath, data_file):
     imgNames = []
@@ -96,41 +114,37 @@ def main(basePath, data_file):
         for imgName in csv.reader(f, delimiter='\n'):
             imgNames.extend(imgName)
 
-    for i, imgName in enumerate(imgNames):
-        cv2.namedWindow(imgName, cv2.WINDOW_AUTOSIZE)
-        cv2.moveWindow(imgName, 100, 100)
+    idx = 0
+    while True:
+        imgName = imgNames[idx]
+        winName = 'ID:' + str(idx).zfill(4) + ' ' + imgName + '.bmp'
+        cv2.namedWindow(winName, cv2.WINDOW_AUTOSIZE)
+        cv2.moveWindow(winName, 100, 0)
 
         img = cv2.imread(os.path.join(basePath, imgName + '.bmp'))
-        fpgt = FPGT(imgName)
+        fpgt = FPGT(imgName, is_print=args.is_print)
 
         img = cv2.resize(img, None, fx=args.resize_ratio, fy=args.resize_ratio, interpolation=cv2.INTER_CUBIC)
         showImg = fancyShow(img, fpgt, args.resize_ratio)
 
-        cv2.imshow(imgName, showImg)
-        if cv2.waitKey(args.interval) & 0xFF == 27:
-            cv2.destroyAllWindows()
-            sys.exit('Esc clicked!')
+        global IS_VIEW
+        if IS_VIEW:
+            cv2.imshow(winName, showImg)  # Display minutiaes
+        else:
+            cv2.imshow(winName, img)  # hide minutiaes
+
+        idx, IS_VIEW = key_control(idx, IS_VIEW)
         cv2.destroyAllWindows()
-
-        # global IS_VIEW
-        # if IS_VIEW:
-        #     cv2.imshow('showImg', showImg)  # Display minutiaes
-        # else:
-        #     cv2.imshow('showImg', img)
-
-        # asc_code = cv2.waitKey(0) & 0xFF
-        # if asc_code == 27:
-        #     sys.exit('Esc clicked!')
-        # elif asc_code == ord('v'):
-        #     IS_VIEW = not IS_VIEW
-
 
 if __name__ == '__main__':
     base_path = '../../Data/BMP_320x280'
     train_file = '../data/train_images.txt'
     test_file = '../data/test_images.txt'
 
-    if args.is_train_data:
+    print('hello world!')
+
+    if args.is_train:
         main(base_path, train_file)
     else:
         main(base_path, test_file)
+
