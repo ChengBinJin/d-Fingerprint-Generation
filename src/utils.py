@@ -8,6 +8,20 @@ import numpy as np
 logger = logging.getLogger(__name__)  # logger
 logger.setLevel(logging.INFO)
 
+
+def init_logger(name):
+    formatter = logging.Formatter('%(asctime)s:%(name)s:%(message)s')
+    # file handler
+    file_handler = logging.FileHandler('../Data/{}'.format(name))
+    file_handler.setFormatter(formatter)
+    file_handler.setLevel(logging.INFO)
+    # stream handler
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(formatter)
+    # add handlers
+    logger.addHandler(file_handler)
+    logger.addHandler(stream_handler)
+
 class FPGT(object):
     def __init__(self, file_name, is_print=False):
         self.base_path = '../../Data/BMP_320x280'
@@ -22,23 +36,8 @@ class FPGT(object):
         # minutiae location (x, y), minutiae direction (from 0 to 359), minutiae quality (from 0 to 100),
         # minutiae type (Ending or bifurcation)
 
-        self._init_logger()
         self.read_minu(file_name)
         self.print_info(is_print)
-
-    @staticmethod
-    def _init_logger():
-        formatter = logging.Formatter('%(asctime)s:%(name)s:%(message)s')
-        # file handler
-        file_handler = logging.FileHandler('../Data/fpgt.log')
-        file_handler.setFormatter(formatter)
-        file_handler.setLevel(logging.INFO)
-        # stream handler
-        stream_handler = logging.StreamHandler()
-        stream_handler.setFormatter(formatter)
-        # add handlers
-        logger.addHandler(file_handler)
-        logger.addHandler(stream_handler)
 
     def read_minu(self, file_name):
         gt_name = os.path.join(self.base_path, file_name + '.MINU')

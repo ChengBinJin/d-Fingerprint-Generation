@@ -1,4 +1,5 @@
 import argparse
+
 from utils import *
 
 parser = argparse.ArgumentParser()
@@ -66,7 +67,10 @@ def main(basePath, data_file):
         for imgName in csv.reader(f, delimiter='\n'):
             imgNames.extend(imgName)
 
-    for idx, imgName in enumerate(imgNames):
+    init_logger('fpgt.log') # initialize logger()
+
+    # for idx, imgName in enumerate(imgNames):
+    for idx in range(0, len(imgNames)):
         imgName = imgNames[idx]
         print('index: {}, imgName: {}'.format(str(idx).zfill(5), imgName))
 
