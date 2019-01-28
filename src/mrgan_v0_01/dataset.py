@@ -35,8 +35,8 @@ class BMP320x280(object):
         self.num_tests = 2500
 
         # tfrecord path
-        self.train_tfpath = '../../Data/BMP_320x280/tfrecords/train.tfrecords'
-        self.test_tfpath = '../../Data/BMP_320x280/tfrecords/test.tfrecords'
+        self.train_tfpath = '../../../Data/BMP_320x280/tfrecord/train.tfrecords'
+        self.test_tfpath = '../../../Data/BMP_320x280/tfrecord/test.tfrecords'
 
         logger.info('Initialize {} dataset SUCCESS!'.format(self.flags.dataset))
         logger.info('Img size: {}'.format(self.image_size))
@@ -44,11 +44,11 @@ class BMP320x280(object):
     def __call__(self, is_train='True'):
         if is_train:
             if not os.path.isfile(self.train_tfpath):
-                sys.exit(' [!] Train tfrecord file is not found...')
+                sys.exit(' [!] Train tfrecord file {} is not found...'.format(self.train_tfpath))
             return self.train_tfpath
         else:
             if not os.path.isfile(self.test_tfpath):
-                sys.exit(' [!] Test tfrecord file is not found...')
+                sys.exit(' [!] Test tfrecord file {} is not found...'.format(self.test_tfpath))
             return self.test_tfpath
 
 

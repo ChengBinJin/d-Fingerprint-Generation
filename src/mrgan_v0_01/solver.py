@@ -22,7 +22,8 @@ logger.setLevel(logging.INFO)
 
 class Solver(object):
     def __init__(self, flags):
-        run_config = tf.ConfigProto()
+        gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=flags.gpu_memory_fraction)
+        run_config = tf.ConfigProto(allow_soft_placement=True, gpu_options=gpu_options)
         run_config.gpu_options.allow_growth = True
         self.sess = tf.Session(config=run_config)
 

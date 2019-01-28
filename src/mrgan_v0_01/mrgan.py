@@ -36,7 +36,7 @@ class MRGAN(object):
 
         self.norm = 'instance'
         self.lambda1, self.lambda2 = 10.0, 10.0
-        self.mm_dim, self.fp_dim = 1, 2
+        self.mm_dim, self.fp_dim = 2, 1
         self.ngf, self.ndf = 64, 64
         self.start_decay_step = int(self.flags.iters / 2)
         self.decay_steps = self.flags.iters - self.start_decay_step
@@ -222,8 +222,7 @@ class MRGAN(object):
 
             utils.print_metrics(iter_time, ord_output)
 
-    @staticmethod
-    def plots(imgs, iter_time, image_size, save_file):
+    def plots(self, imgs, iter_time, image_size, save_file):
         # parameters for plot size
         scale, margin = 0.02, 0.02
         n_cols, n_rows = len(imgs), imgs[0].shape[0]
@@ -234,7 +233,6 @@ class MRGAN(object):
         gs.update(wspace=margin, hspace=margin)
 
         imgs = [utils.inverse_transform(imgs[idx]) for idx in range(len(imgs))]
-
         # save more bigger image
         for col_index in range(n_cols):
             for row_index in range(n_rows):
@@ -243,11 +241,23 @@ class MRGAN(object):
                 ax.set_xticklabels([])
                 ax.set_yticklabels([])
                 ax.set_aspect('equal')
-                plt.imshow((imgs[col_index][row_index]).reshape(
-                    image_size[0], image_size[1], image_size[2]), cmap='Greys_r')
+                # plt.imshow((imgs[col_index][row_index]).reshape(
+                #     image_size[0], image_size[1], image_size[2]), cmap='Greys_r')
+                plt.imshow(self.convert2img(imgs[col_index][row_index]), cmap='Greys_r')
 
         plt.savefig(save_file + '/sample_{}.png'.format(str(iter_time).zfill(5)), bbox_inches='tight')
         plt.close(fig)
+
+    @staticmethod
+    def convert2img(img):
+        h, w, c = img.shape
+        canvas = np.zeros((h, w, 3))
+        if c == 2:
+            canvas[:, :, :c] = img
+        elif c == 1:
+            canvas[:, :, :] = np.dstack((img, img, img))
+
+        return canvas
 
     def plots_test(self, imgs, img_name, save_file):
         num_imgs = len(imgs)
