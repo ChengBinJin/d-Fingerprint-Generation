@@ -104,7 +104,7 @@ class MRGAN(object):
 
         # Y -> X
         self.F_gen_loss = self.generator_loss(self.Dx_dis, self.yx_fake_pairs)
-        self.F_cond_loss = self.voxel_loss(preds=self.fake_x_imgs, gts=self.x_imgs_2d, weight=10.)
+        self.F_cond_loss = self.voxel_loss(preds=self.fake_x_imgs, gts=self.x_imgs_2d, weight=0.)
         self.F_loss = self.F_gen_loss + self.F_cond_loss + self.cycle_loss
         self.Dx_dis_loss = self.discriminator_loss(self.Dx_dis, self.yx_real_pairs, self.yx_fake_pairs_tfph)
 

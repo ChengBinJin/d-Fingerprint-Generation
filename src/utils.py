@@ -4,6 +4,7 @@ import logging
 import cv2
 import csv
 import numpy as np
+from scipy import ndimage
 
 logger = logging.getLogger(__name__)  # logger
 logger.setLevel(logging.INFO)
@@ -119,3 +120,29 @@ def fancyShow(img, fpgt, resize_ratio=1.):
                                        int(np.round(y + np.sin(radian) * length))), blueColor, thickness)
 
     return showImg
+
+def inverse_transform(img):
+    return (np.round(255. * (img + 1.) / 2.)).astype(np.uint8)
+
+def draw_minutiae(minu_map, img):
+    # drc = minu_map[0, :, :, 0]
+    minuType = minu_map[0, :, :, 1]
+    x_cor_end, y_cor_end = np.where(minuType == 128)
+    x_cor_bif, y_cor_bif = np.where(minuType == 255)
+
+    # num_minutiaes = 0
+    # x_cors_drc, y_cors_drc = np.where(drc != 0)
+    # print('num of minutiaes: {}'.format(len(x_cors_drc)))
+
+    show_img = img[0, :, :, :].copy()
+    # show_img[x_cors_drc, y_cors_drc, :] = [255, 0, 0]
+    show_img[x_cor_end, y_cor_end] = [255, 0, 0]
+    # show_img[x_cor_bif, y_cor_bif] = [0, 0, 255]
+
+    kernel = 1./255. * np.ones((11, 11), dtype=np.float64)
+    test_res = (np.round(ndimage.convolve(show_img[:, :, 0], kernel, mode='constant', cval=0.))).astype(np.uint8)
+    # show_img[np.where(show_img == 121)] = [255, 0, 0]
+    print(np.where(test_res==121))
+
+
+    return show_img

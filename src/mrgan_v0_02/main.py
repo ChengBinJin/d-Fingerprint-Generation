@@ -21,10 +21,10 @@ tf.flags.DEFINE_float('L1_lambda', 100., 'L1 lambda for conditional voxel-wise l
 tf.flags.DEFINE_float('learning_rate', 2e-4, 'initial learning rate for Adam, default: 0.0002')
 tf.flags.DEFINE_float('beta1', 0.5, 'momentum term of Adam, default: 0.5')
 
-tf.flags.DEFINE_integer('iters', 300, 'number of iterations, default: 200000')
-tf.flags.DEFINE_integer('print_freq', 10, 'print frequency for loss, default: 100')
+tf.flags.DEFINE_integer('iters', 20, 'number of iterations, default: 200000')
+tf.flags.DEFINE_integer('print_freq', 2, 'print frequency for loss, default: 100')
 tf.flags.DEFINE_integer('save_freq', 10000, 'save frequency for model, default: 10000')
-tf.flags.DEFINE_integer('sample_freq', 50, 'sample frequency for saving image, default: 500')
+tf.flags.DEFINE_integer('sample_freq', 5, 'sample frequency for saving image, default: 500')
 tf.flags.DEFINE_string('load_model', None, 'folder of saved model that you wish to continue training '
                                            '(e.g. 20190124-1618), default: None')
 

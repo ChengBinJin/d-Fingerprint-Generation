@@ -57,7 +57,7 @@ def imwrite(img, minumap, basePath, imgName):
         os.makedirs(save_folder)
 
     newImg = np.hstack([minumap, img])
-    cv2.imwrite(os.path.join(save_folder, imgName + '.png'), newImg)
+    cv2.imwrite(os.path.join(save_folder, imgName + '.png'), newImg[:, :, ::-1])
 
 
 def main(basePath, data_file):
