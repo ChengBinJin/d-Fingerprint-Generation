@@ -1,6 +1,7 @@
 src/.idea/
 src/__pycache__/
 src/mrgan/.idea/
+src/mrgan_v0_01/.idea/
 src/mrgan/__pycache__/
 src/utility/__pycache__/
 data/fpgt.log
