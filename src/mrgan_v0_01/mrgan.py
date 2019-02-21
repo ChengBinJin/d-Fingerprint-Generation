@@ -263,12 +263,14 @@ class MRGAN(object):
     def plots_test(self, imgs, img_name, save_file):
         num_imgs = len(imgs)
 
-        canvas = np.zeros((self.img_size[0], num_imgs * self.img_size[1]), np.uint8)
+        canvas = np.zeros((self.img_size[0], num_imgs * self.img_size[1], 3), np.uint8)
         for idx in range(num_imgs):
             canvas[:, idx * self.img_size[1]: (idx+1) * self.img_size[1], :] = \
-                np.squeeze(255. * utils.inverse_transform(imgs[idx]))
+                self.convert2img(255. * utils.inverse_transform(imgs[idx][0]))
 
         img_name_ = img_name.astype('U26')[0]
+        img_name_ = img_name_[:-1] + 'png'
+
         # save imgs on test folder
         cv2.imwrite(os.path.join(save_file, img_name_), canvas)
 
